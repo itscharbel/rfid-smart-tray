@@ -1,0 +1,11 @@
+# created on the Pi at runtime: secrets and personal data, never commit
+tray_config.json*
+tray_data.json*
+calendar_cache.*
+weather_cache.json
+tray_rules.json
+events.csv*
+tray_results/
+*.bak-*
+__pycache__/
+.DS_Store

@@ -1,0 +1,49 @@
+part,id,what,result,reason,latency_status_s,latency_notification_s
+placement,R1-bag-1,bag on R1,fail,other tag read: bottle on R1,,
+placement,R1-bag-2,bag on R1,pass,,,
+placement,R1-bottle-1,bottle on R1,pass,,,
+placement,R1-bottle-2,bottle on R1,pass,,,
+placement,R1-keys-1,keys on R1,pass,,,
+placement,R1-keys-2,keys on R1,pass,,,
+placement,R1-laptop-1,laptop on R1,pass,,,
+placement,R1-laptop-2,laptop on R1,pass,,,
+placement,R1-towel-1,towel on R1,pass,,,
+placement,R1-towel-2,towel on R1,pass,,,
+placement,R2-bag-1,bag on R2,pass,,,
+placement,R2-bag-2,bag on R2,pass,,,
+placement,R2-bottle-1,bottle on R2,pass,,,
+placement,R2-bottle-2,bottle on R2,pass,,,
+placement,R2-keys-1,keys on R2,pass,,,
+placement,R2-keys-2,keys on R2,pass,,,
+placement,R2-laptop-1,laptop on R2,pass,,,
+placement,R2-laptop-2,laptop on R2,pass,,,
+placement,R2-towel-1,towel on R2,pass,,,
+placement,R2-towel-2,towel on R2,pass,,,
+placement,R3-bag-1,bag on R3,pass,,,
+placement,R3-bag-2,bag on R3,pass,,,
+placement,R3-bottle-1,bottle on R3,pass,,,
+placement,R3-bottle-2,bottle on R3,pass,,,
+placement,R3-keys-1,keys on R3,pass,,,
+placement,R3-keys-2,keys on R3,pass,,,
+placement,R3-laptop-1,laptop on R3,pass,,,
+placement,R3-laptop-2,laptop on R3,pass,,,
+placement,R3-towel-1,towel on R3,pass,,,
+placement,R3-towel-2,towel on R3,pass,,,
+scenario,S01,"Gym: 3 items, all present (no bag)",pass,,0.75,None
+scenario,S02,Work: laptop and bottle,pass,,0.53,None
+scenario,S03,"Two events in a row (Work + Gym), keys forgotten",pass,,0.11,0.79
+scenario,S04,"Porta: line only (Dinner: keys, towel)",pass,,0.36,None
+scenario,S05,Event with no preset and no Porta: line (nothing to bring),pass,,None,None
+scenario,S06,Everything present plus an extra thing: silence,pass,,0.0,None
+scenario,S07,One item missing (Work without bottle),pass,,0.71,0.77
+scenario,S08,All missing (only an unneeded laptop on the tray),pass,status did not change after the last placement (it already showed this),None,0.76
+scenario,S09,Untagged object (umbrella has no tag),pass,,0.69,0.83
+scenario,S10,Bag lifted while the bottle is missing,pass,,0.38,0.69
+scenario,S11,"Evening, bag put down, bottle missing for tomorrow",pass,,0.26,3.74
+scenario,S12,"Evening, everything ready for tomorrow (no bag): silence",pass,,0.79,None
+scenario,S13,Stale calendar (stale_after_hours = 0 for this scenario),pass,,0.11,None
+scenario,S14,No event at all,pass,,None,None
+scenario,W1,"Rain tomorrow: umbrella has no tag, reminder only (evening, everything else ready)",pass,,0.64,7.99
+scenario,W2,Hot and sunny: sunglasses + sunscreen reminders never block READY,pass,,0.1,None
+scenario,W3,"Cold, evening, bag put down, bottle missing: one notification with the reminder",pass,,0.88,3.82
+scenario,W4,Weather unavailable (cache counts as stale: weather_stale_hours = 0): no weather items,pass,,0.01,None

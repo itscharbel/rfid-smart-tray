@@ -1,0 +1,5 @@
+# On the Raspberry Pi (Python 3.11+). The tests on a laptop only need the last two.
+RPi.GPIO==0.7.1
+mfrc522==0.0.7
+icalendar==7.3.0
+recurring-ical-events==3.8.2

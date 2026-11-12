@@ -1,0 +1,107 @@
+{
+  "about": "Scenario test for G2/G3. Run on the Pi: python3 test_session.py scenarios. Events: see test_events.md (generated from 'events' below). weather_override defaults to 'off' (real forecast never used); W1-W4 set their own. expected_reminders = weather suggestions not on the tray (never MISSING).",
+  "bag_tag": "bag",
+  "tags": ["bag", "laptop", "bottle", "towel", "keys"],
+  "untagged": ["umbrella", "sunglasses", "sunscreen", "scarf", "gloves"],
+  "presets": {"gym": ["bottle", "towel"], "work": ["laptop", "bottle"]},
+  "events": {
+    "tue_work":    {"title": "Work",             "date": "2026-11-17", "start": "08:00", "end": "12:00", "description": ""},
+    "tue_gym":     {"title": "Gym",              "date": "2026-11-17", "start": "17:00", "end": "18:30", "description": "Porta: keys"},
+    "wed_work":    {"title": "Work",             "date": "2026-11-18", "start": "09:00", "end": "17:00", "description": ""},
+    "thu_dinner":  {"title": "Dinner with Marco", "date": "2026-11-19", "start": "19:00", "end": "21:00", "description": "Porta: keys, towel"},
+    "fri_walk":    {"title": "Walk in the park", "date": "2026-11-20", "start": "10:00", "end": "12:00", "description": "Porta: umbrella, bottle"},
+    "fri_meeting": {"title": "Team meeting",     "date": "2026-11-20", "start": "15:00", "end": "16:00", "description": ""}
+  },
+  "scenarios": [
+    {"id": "S01", "name": "Gym: 3 items, all present (no bag)", "mode": "no-bag",
+     "event_keys": ["tue_work", "tue_gym"], "fake_now": "2026-11-17T13:00:00",
+     "items_on_tray": ["bottle", "towel", "keys"], "action": "leave",
+     "expected_state": "READY", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S02", "name": "Work: laptop and bottle", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00",
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "READY", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S03", "name": "Two events in a row (Work + Gym), keys forgotten", "mode": "no-bag",
+     "event_keys": ["tue_work", "tue_gym"], "fake_now": "2026-11-17T06:00:00",
+     "items_on_tray": ["laptop", "bottle", "towel"], "action": "leave",
+     "expected_state": "MISSING", "expected_missing": ["keys"], "expected_notification": true},
+
+    {"id": "S04", "name": "Porta: line only (Dinner: keys, towel)", "mode": "no-bag",
+     "event_keys": ["thu_dinner"], "fake_now": "2026-11-19T15:00:00",
+     "items_on_tray": ["keys", "towel"], "action": "leave",
+     "expected_state": "READY", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S05", "name": "Event with no preset and no Porta: line (nothing to bring)", "mode": "no-bag",
+     "event_keys": ["fri_walk", "fri_meeting"], "fake_now": "2026-11-20T13:00:00",
+     "items_on_tray": ["laptop"], "action": "leave",
+     "expected_state": "IDLE", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S06", "name": "Everything present plus an extra thing: silence", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00",
+     "items_on_tray": ["laptop", "bottle", "keys"], "action": "leave",
+     "expected_state": "READY", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S07", "name": "One item missing (Work without bottle)", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00",
+     "items_on_tray": ["laptop"], "action": "leave",
+     "expected_state": "MISSING", "expected_missing": ["bottle"], "expected_notification": true},
+
+    {"id": "S08", "name": "All missing (only an unneeded laptop on the tray)", "mode": "no-bag",
+     "event_keys": ["tue_work", "tue_gym"], "fake_now": "2026-11-17T13:00:00",
+     "items_on_tray": ["laptop"], "action": "leave",
+     "expected_state": "MISSING", "expected_missing": ["bottle", "towel", "keys"], "expected_notification": true},
+
+    {"id": "S09", "name": "Untagged object (umbrella has no tag)", "mode": "no-bag",
+     "event_keys": ["fri_walk", "fri_meeting"], "fake_now": "2026-11-20T07:30:00",
+     "items_on_tray": ["bottle"], "action": "leave",
+     "expected_state": "MISSING", "expected_missing": ["umbrella"], "expected_notification": true},
+
+    {"id": "S10", "name": "Bag lifted while the bottle is missing", "mode": "bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00",
+     "items_on_tray": ["laptop"], "action": "lift",
+     "expected_state": "MISSING", "expected_missing": ["bottle"], "expected_notification": true},
+
+    {"id": "S11", "name": "Evening, bag put down, bottle missing for tomorrow", "mode": "bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-17T21:00:00",
+     "items_on_tray": ["laptop"], "action": "none",
+     "expected_state": "MISSING", "expected_missing": ["bottle"], "expected_notification": true},
+
+    {"id": "S12", "name": "Evening, everything ready for tomorrow (no bag): silence", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-17T21:00:00",
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "READY", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S13", "name": "Stale calendar (stale_after_hours = 0 for this scenario)", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00", "stale_after_hours": 0,
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "STALE", "expected_missing": [], "expected_notification": false},
+
+    {"id": "S14", "name": "No event at all", "mode": "no-bag",
+     "event_keys": [], "fake_now": "2026-11-21T10:00:00",
+     "items_on_tray": ["keys"], "action": "none",
+     "expected_state": "IDLE", "expected_missing": [], "expected_notification": false},
+
+    {"id": "W1", "name": "Rain tomorrow: umbrella has no tag, reminder only (evening, everything else ready)", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-17T21:00:00", "weather_override": "rain",
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "READY", "expected_missing": [], "expected_reminders": ["umbrella"], "expected_notification": true},
+
+    {"id": "W2", "name": "Hot and sunny: sunglasses + sunscreen reminders never block READY", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00", "weather_override": "hot",
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "READY", "expected_missing": [], "expected_reminders": ["sunglasses", "sunscreen"], "expected_notification": false},
+
+    {"id": "W3", "name": "Cold, evening, bag put down, bottle missing: one notification with the reminder", "mode": "bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-17T21:00:00", "weather_override": "cold",
+     "items_on_tray": ["laptop"], "action": "none",
+     "expected_state": "MISSING", "expected_missing": ["bottle"], "expected_reminders": ["scarf", "gloves"], "expected_notification": true},
+
+    {"id": "W4", "name": "Weather unavailable (cache counts as stale: weather_stale_hours = 0): no weather items", "mode": "no-bag",
+     "event_keys": ["wed_work"], "fake_now": "2026-11-18T06:30:00", "weather_override": "none", "weather_stale_hours": 0,
+     "items_on_tray": ["laptop", "bottle"], "action": "none",
+     "expected_state": "READY", "expected_missing": [], "expected_reminders": [], "expected_weather": "unavailable",
+     "expected_notification": false}
+  ]
+}

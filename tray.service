@@ -1,0 +1,19 @@
+# System service for the RFID tray: install as /etc/systemd/system/tray.service (see README.md).
+[Unit]
+Description=RFID tray (tray4.py)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi
+# -u: unbuffered, so every log line reaches journalctl straight away
+ExecStart=/home/pi/rfid-env/bin/python -u /home/pi/tray4.py
+Restart=always
+RestartSec=5
+# SIGINT -> KeyboardInterrupt -> finally: LEDs back to default, GPIO cleanup
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

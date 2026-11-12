@@ -1,0 +1,3 @@
+# Let group gpio (user pi) drive the onboard LEDs for tray4.py. Install once:
+#   sudo install -m 644 ~/99-tray-leds.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=leds --action=add
+SUBSYSTEM=="leds", KERNEL=="ACT|PWR", RUN+="/bin/chgrp gpio /sys%p/brightness /sys%p/trigger", RUN+="/bin/chmod g+w /sys%p/brightness /sys%p/trigger"
